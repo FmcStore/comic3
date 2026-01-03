@@ -7,41 +7,28 @@
     },
     {
       "src": "package.json",
-      "use": "@vercel/next",
-      "config": { "distDir": "dist" }
-    }
-  ],
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/api/index.js"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/"
+      "use": "@vercel/static-build",
+      "config": {
+        "outputDir": "dist"
+      }
     }
   ],
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/index.js" },
-    { "source": "/series/(.*)", "destination": "/" },
-    { "source": "/chapter/(.*)", "destination": "/" },
-    { "source": "/ongoing", "destination": "/" },
-    { "source": "/completed", "destination": "/" },
-    { "source": "/bookmarks", "destination": "/" },
-    { "source": "/history", "destination": "/" }
+    { "source": "/series/:slug", "destination": "/index.html" },
+    { "source": "/chapter/:slug", "destination": "/index.html" },
+    { "source": "/ongoing", "destination": "/index.html" },
+    { "source": "/completed", "destination": "/index.html" },
+    { "source": "/bookmarks", "destination": "/index.html" },
+    { "source": "/history", "destination": "/index.html" },
+    { "source": "/(.*)", "destination": "/index.html" }
   ],
   "headers": [
     {
       "source": "/(.*)",
       "headers": [
-        {
-          "key": "Service-Worker-Allowed",
-          "value": "/"
-        },
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=3600"
-        }
+        { "key": "Service-Worker-Allowed", "value": "/" },
+        { "key": "Cache-Control", "value": "public, max-age=3600" }
       ]
     }
   ]
