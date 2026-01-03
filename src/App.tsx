@@ -1,50 +1,92 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { QueryClient, QueryClientProvider } from 'react-query';
-import { AnimatePresence } from 'framer-motion';
+import React, { Suspense, lazy, useEffect, useState } from 'react'
+import { Routes, Route, useLocation } from 'react-router-dom'
+import { AnimatePresence, motion } from 'framer-motion'
+import { Toaster } from 'react-hot-toast'
+import Header from './components/Header'
+import BottomNav from './components/BottomNav'
+import LoadingSpinner from './components/LoadingSpinner'
 
-// Components
-import Header from './components/Header';
-import BottomNav from './components/BottomNav';
-
-// Pages
-import Home from './pages/Home';
-import Detail from './pages/Detail';
-import Chapter from './pages/Chapter';
-import Bookmarks from './pages/Bookmarks';
-import History from './pages/History';
-
-// Styles
-import './styles/globals.css';
-
-const queryClient = new QueryClient();
+// Lazy load pages
+const Home = lazy(() => import('./pages/Home'))
+const Detail = lazy(() => import('./pages/Detail'))
+const Chapter = lazy(() => import('./pages/Chapter'))
+const Bookmarks = lazy(() => import('./pages/Bookmarks'))
+const History = lazy(() => import('./pages/History'))
+const Search = lazy(() => import('./pages/Search'))
+const NotFound = lazy(() => import('./pages/NotFound'))
 
 function App() {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <Router>
-        <div className="min-h-screen bg-gradient-to-b from-zinc-950 to-black text-white">
-          <Header />
-          
-          <AnimatePresence mode="wait">
-            <main className="pt-20 pb-24 md:pb-20">
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/series/:slug" element={<Detail />} />
-                <Route path="/chapter/:slug" element={<Chapter />} />
-                <Route path="/bookmarks" element={<Bookmarks />} />
-                <Route path="/history" element={<History />} />
-                <Route path="/ongoing" element={<Home filter="ongoing" />} />
-                <Route path="/completed" element={<Home filter="completed" />} />
-              </Routes>
-            </main>
-          </AnimatePresence>
+  const location = useLocation()
+  const [isLoading, setIsLoading] = useState(false)
 
-          <BottomNav />
-        </div>
-      </Router>
-    </QueryClientProvider>
-  );
+  useEffect(() => {
+    // Show loading when route changes
+    setIsLoading(true)
+    const timer = setTimeout(() => setIsLoading(false), 300)
+    return () => clearTimeout(timer)
+  }, [location.pathname])
+
+  // PWA Install Prompt
+  useEffect(() => {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/service-worker.js')
+        .then(registration => {
+          console.log('Service Worker registered:', registration)
+        })
+        .catch(error => {
+          console.log('Service Worker registration failed:', error)
+        })
+    }
+  }, [])
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-black via-zinc-900 to-black text-white">
+      <Header />
+      
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          style: {
+            background: '#1a1a1a',
+            color: '#fff',
+            border: '1px solid #f59e0b',
+          },
+        }}
+      />
+
+      <main className="pt-16 pb-20 md:pb-16">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={location.pathname}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.2 }}
+          >
+            <Suspense fallback={<LoadingSpinner />}>
+              {isLoading ? (
+                <LoadingSpinner />
+              ) : (
+                <Routes location={location}>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/series/:uuid" element={<Detail />} />
+                  <Route path="/chapter/:uuid" element={<Chapter />} />
+                  <Route path="/bookmarks" element={<Bookmarks />} />
+                  <Route path="/history" element={<History />} />
+                  <Route path="/search" element={<Search />} />
+                  <Route path="/ongoing" element={<Home filter="ongoing" />} />
+                  <Route path="/completed" element={<Home filter="completed" />} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              )}
+            </Suspense>
+          </motion.div>
+        </AnimatePresence>
+      </main>
+
+      <BottomNav />
+    </div>
+  )
 }
 
-export default App;
+export default App
