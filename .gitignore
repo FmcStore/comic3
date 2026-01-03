@@ -1,12 +1,12 @@
 # Dependencies
-node_modules
+node_modules/
 .npm
 .pnpm
-.yarn
+.yarn/
 
 # Build outputs
-dist
-dist-ssr
+dist/
+dist-ssr/
 *.tsbuildinfo
 
 # Environment variables
@@ -17,8 +17,8 @@ dist-ssr
 .env.production.local
 
 # IDE
-.vscode
-.idea
+.vscode/
+.idea/
 *.swp
 *.swo
 
@@ -32,9 +32,13 @@ yarn-debug.log*
 yarn-error.log*
 
 # Coverage
-coverage
+coverage/
 
 # Misc
 *.log
-.cache
-.temp
+.cache/
+.temp/
+.tmp/
+
+# Vercel
+.vercel/
