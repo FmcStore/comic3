@@ -2,12 +2,12 @@ export interface Comic {
   slug: string;
   title: string;
   image: string;
-  type: 'manga' | 'manhwa' | 'manhua' | 'other';
-  status: 'ongoing' | 'completed';
-  rating: string;
-  genres: { title: string }[];
-  synopsis: string;
-  chapters: Chapter[];
+  type: string;
+  status: string;
+  rating?: string;
+  genres?: Array<{ title: string }>;
+  synopsis?: string;
+  chapters?: Chapter[];
   latestChapter?: string;
 }
 
@@ -22,28 +22,9 @@ export interface Chapter {
   };
 }
 
-export interface ReadingProgress {
-  comicSlug: string;
-  chapterSlug: string;
-  chapterTitle: string;
-  progress: number; // 0-100
-  lastRead: Date;
-}
-
-export interface Bookmark {
-  slug: string;
-  title: string;
-  image: string;
-  type: string;
-  lastReadAt: Date;
-  progress: number;
-}
-
-export interface HistoryItem {
-  slug: string;
-  title: string;
-  image: string;
-  lastChapterSlug: string;
-  lastChapterTitle: string;
-  readAt: Date;
+export interface ApiResponse {
+  success: boolean;
+  result?: any;
+  data?: any;
+  content?: any;
 }
