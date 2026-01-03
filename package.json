@@ -9,33 +9,30 @@
     "preview": "vite preview",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "format": "prettier --write \"src/**/*.{ts,tsx,css,json}\"",
-    "deploy": "npm run build && vercel --prod",
-    
-    // Backend scripts (opsional, untuk run lokal)
-    "api:dev": "cd api && npm start",
-    "dev:full": "concurrently \"npm run dev\" \"npm run api:dev\""
+    "deploy": "npm run build && vercel --prod"
   },
   "dependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.20.0",
-    "swiper": "^10.3.1",
-    "framer-motion": "^10.16.4",
     "@tanstack/react-query": "^5.12.0",
+    "framer-motion": "^10.16.4",
+    "react-hot-toast": "^2.4.1",
+    "swiper": "^10.3.1",
+    "dayjs": "^1.11.10",
     "uuid": "^9.0.1",
     "react-intersection-observer": "^9.5.3",
-    "react-hotkeys-hook": "^4.4.1",
-    "dayjs": "^1.11.10"
+    "react-hotkeys-hook": "^4.4.1"
   },
   "devDependencies": {
     "@types/react": "^18.2.43",
     "@types/react-dom": "^18.2.17",
+    "@types/react-hot-toast": "^2.0.1",
     "@types/uuid": "^9.0.7",
     "@typescript-eslint/eslint-plugin": "^6.14.0",
     "@typescript-eslint/parser": "^6.14.0",
     "@vitejs/plugin-react": "^4.2.1",
     "autoprefixer": "^10.4.16",
-    "concurrently": "^8.2.2",  // ← ADD THIS for running both frontend & backend
     "eslint": "^8.55.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",
