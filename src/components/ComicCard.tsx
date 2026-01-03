@@ -7,13 +7,17 @@ interface ComicCardProps {
   onClick: () => void;
   showProgress?: boolean;
   progress?: number;
+  size?: 'small' | 'medium' | 'large';
+  showType?: boolean;
 }
 
 const ComicCard: React.FC<ComicCardProps> = ({ 
   comic, 
   onClick, 
   showProgress = false, 
-  progress = 0 
+  progress = 0,
+  size = 'medium',
+  showType = false
 }) => {
   const getTypeColor = (type: string) => {
     const t = type.toLowerCase();
@@ -21,6 +25,12 @@ const ComicCard: React.FC<ComicCardProps> = ({
     if (t.includes('manhwa')) return 'bg-green-600';
     if (t.includes('manhua')) return 'bg-red-600';
     return 'bg-gray-600';
+  };
+
+  const sizeClasses = {
+    small: 'h-48',
+    medium: 'h-64',
+    large: 'h-80'
   };
 
   return (
@@ -42,9 +52,11 @@ const ComicCard: React.FC<ComicCardProps> = ({
       )}
 
       {/* Type Badge */}
-      <div className={`absolute top-3 left-3 z-10 px-2 py-1 rounded-lg text-[10px] font-bold uppercase ${getTypeColor(comic.type)}`}>
-        {comic.type}
-      </div>
+      {showType && (
+        <div className={`absolute top-3 left-3 z-10 px-2 py-1 rounded-lg text-[10px] font-bold uppercase ${getTypeColor(comic.type)}`}>
+          {comic.type}
+        </div>
+      )}
 
       {/* Continue Reading Badge */}
       {progress > 0 && progress < 100 && (
@@ -54,7 +66,7 @@ const ComicCard: React.FC<ComicCardProps> = ({
       )}
 
       {/* Image */}
-      <div className="relative h-64 overflow-hidden">
+      <div className={`relative ${sizeClasses[size]} overflow-hidden`}>
         <img
           src={comic.image}
           alt={comic.title}
