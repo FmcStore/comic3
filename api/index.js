@@ -5,8 +5,32 @@ const { v4: uuidv4 } = require('uuid');
 require('dotenv').config();
 
 const app = express();
-app.use(cors());
+
+// Enhanced CORS configuration
+app.use(cors({
+  origin: [
+    'http://localhost:3000',
+    'http://localhost:5173',
+    'https://fmc-comic.vercel.app',
+    'https://*.vercel.app',
+    'https://fmc-comic-v2.vercel.app'
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Health check endpoint
+app.get('/', (req, res) => {
+  res.json({ 
+    status: 'OK', 
+    service: 'FMC Comic API',
+    version: '2.0.0'
+  });
+});
 
 const connectionOptions = {
     serverSelectionTimeoutMS: 5000, 
@@ -74,5 +98,19 @@ app.get('/api/health', async (req, res) => {
         res.status(500).json({ status: "Error", message: e.message });
     }
 });
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({ error: 'Something broke!', details: err.message });
+});
+
+const PORT = process.env.PORT || 3001;
+
+if (require.main === module) {
+    app.listen(PORT, () => {
+        console.log(`🚀 Server running on port ${PORT}`);
+    });
+}
 
 module.exports = app;
